@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(where flutter:*)",
+      "Read(//c/Users/HP/flutter/**)",
+      "Bash(winget --version)",
+      "Bash(choco --version)",
+      "Bash(scoop --version)",
+      "Bash(choco install:*)",
+      "Bash(powershell -Command \":*)",
+      "Read(//c/flutter/bin//**)",
+      "Bash(/c/flutter/bin/flutter --version)",
+      "Bash(/c/flutter/bin/flutter doctor:*)",
+      "Bash(/c/flutter/bin/flutter create:*)",
+      "Bash(/c/flutter/bin/flutter pub:*)",
+      "Bash(/c/flutter/bin/flutter analyze:*)",
+      "Bash(/c/flutter/bin/flutter run:*)",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\''\")",
+      "Bash(powershell -Command \"[Net.ServicePointManager]::SecurityProtocol = ''Tls12''; Invoke-WebRequest -Uri ''https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Regular.ttf'' -OutFile ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\Poppins-Regular.ttf'' -UseBasicParsing\")",
+      "Bash(powershell -Command \"[Net.ServicePointManager]::SecurityProtocol = ''Tls12''; Invoke-WebRequest -Uri ''https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Medium.ttf'' -OutFile ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\Poppins-Medium.ttf'' -UseBasicParsing\")",
+      "Bash(powershell -Command \"[Net.ServicePointManager]::SecurityProtocol = ''Tls12''; Invoke-WebRequest -Uri ''https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-SemiBold.ttf'' -OutFile ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\Poppins-SemiBold.ttf'' -UseBasicParsing\")",
+      "Bash(powershell -Command \"[Net.ServicePointManager]::SecurityProtocol = ''Tls12''; Invoke-WebRequest -Uri ''https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf'' -OutFile ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\Poppins-Bold.ttf'' -UseBasicParsing\")",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\'' | Select-Object Name, Length\")",
+      "Bash(powershell -Command \"Remove-Item ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\.ttf'' -Force\")",
+      "Bash(xargs grep:*)",
+      "Bash(/c/flutter/bin/flutter build:*)"
+    ]
+  }
+}
