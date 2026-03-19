@@ -123,7 +123,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         return false;
       },
       (user) {
-        state = AuthState(user: user, isLoggedIn: true);
+        // Sign out immediately so user must log in manually after registration
+        _repository.logout();
+        state = const AuthState(isLoggedIn: false);
         return true;
       },
     );
