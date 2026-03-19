@@ -113,7 +113,7 @@ class HomeScreen extends ConsumerWidget {
                             separatorBuilder: (_, __) => const SizedBox(width: 8),
                             itemBuilder: (_, i) => _CategoryPill(
                               name: cats[i].name,
-                              onTap: () => context.push('${RouteNames.products}/${cats[i].id}'),
+                              onTap: () => context.push('${RouteNames.productList}/${cats[i].id}'),
                             ),
                           ),
                         ),
