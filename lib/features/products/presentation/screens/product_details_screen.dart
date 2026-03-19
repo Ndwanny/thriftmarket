@@ -10,7 +10,15 @@ import '../../../../core/extensions/extensions.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
 import '../../../cart/presentation/providers/cart_provider.dart';
+import '../../../tryon/presentation/screens/try_on_screen.dart';
 import '../providers/product_provider.dart';
+
+// Categories where try-on makes sense
+const _tryOnCategoryIds = {
+  'a1000000-0000-0000-0000-000000000001', // Streetwear & Fashion
+  'a1000000-0000-0000-0000-000000000003', // Sneakers & Footwear
+  'a1000000-0000-0000-0000-000000000008', // Bags & Accessories
+};
 
 class ProductDetailsScreen extends ConsumerWidget {
   final String productId;
@@ -197,38 +205,77 @@ class ProductDetailsScreen extends ConsumerWidget {
           bottomNavigationBar: SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: product.isInStock ? () {
-                        ref.read(cartProvider.notifier).addItem(
-                          CartItemEntity(
-                            id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
-                            productId: product.id,
-                            title: product.title,
-                            imageUrl: product.firstImage,
-                            price: product.price,
-                            compareAtPrice: product.compareAtPrice,
-                            quantity: 1,
-                            vendorId: product.vendorId,
-                            vendorName: product.vendorName,
-                            maxStock: product.stock,
+                  // Try-On button — only for wearable categories
+                  if (_tryOnCategoryIds.contains(product.categoryId) &&
+                      product.firstImage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => TryOnScreen(
+                                  productTitle: product.title,
+                                  garmentImageUrl: product.firstImage!,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.checkroom_rounded, size: 18),
+                          label: const Text('VIRTUAL TRY-ON'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: const BorderSide(color: AppColors.primary),
+                            padding: const EdgeInsets.symmetric(vertical: 13),
+                            textStyle: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                              letterSpacing: 1,
+                            ),
                           ),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Added to cart!')),
-                        );
-                      } : null,
-                      child: const Text(AppStrings.addToCart),
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: product.isInStock ? () {} : null,
-                      child: const Text(AppStrings.buyNow),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: product.isInStock ? () {
+                            ref.read(cartProvider.notifier).addItem(
+                              CartItemEntity(
+                                id: '${product.id}_${DateTime.now().millisecondsSinceEpoch}',
+                                productId: product.id,
+                                title: product.title,
+                                imageUrl: product.firstImage,
+                                price: product.price,
+                                compareAtPrice: product.compareAtPrice,
+                                quantity: 1,
+                                vendorId: product.vendorId,
+                                vendorName: product.vendorName,
+                                maxStock: product.stock,
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Added to cart!')),
+                            );
+                          } : null,
+                          child: const Text(AppStrings.addToCart),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: product.isInStock ? () {} : null,
+                          child: const Text(AppStrings.buyNow),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

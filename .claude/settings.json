@@ -28,7 +28,15 @@
       "WebSearch",
       "Bash(find c:UsersHPDocumentsdevmarketplacelibfeaturesvendor -type f -name *.dart)",
       "Bash(C:/flutter/bin/flutter build:*)",
-      "Bash(npx wrangler:*)"
+      "Bash(npx wrangler:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(cmd.exe /c \"flutter analyze --no-fatal-infos 2>&1\")",
+      "Bash(cmd.exe /c \"cd \"\"C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\"\" && flutter analyze --no-fatal-infos\")",
+      "Bash(powershell.exe -Command \"Get-Command flutter -ErrorAction SilentlyContinue; Get-ChildItem ''C:\\\\Users\\\\HP\\\\flutter\\\\bin\\\\flutter.bat'' -ErrorAction SilentlyContinue; Get-ChildItem ''C:\\\\flutter\\\\bin\\\\flutter.bat'' -ErrorAction SilentlyContinue\")",
+      "Bash(flutter build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
