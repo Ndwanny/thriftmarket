@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/extensions/extensions.dart';
 import '../../../../core/router/route_names.dart';
 import '../../domain/entities/product_entity.dart';
@@ -19,17 +18,16 @@ class ProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isWishlisted =
-        ref.watch(wishlistProvider.select((s) => s.contains(product.id)));
+    final isWishlisted = ref.watch(wishlistProvider.select((s) => s.contains(product.id)));
 
     return GestureDetector(
       onTap: () => context.push('${RouteNames.productDetails}/${product.id}'),
       child: Container(
-        width: width ?? AppSizes.productCardWidth,
+        width: width ?? 160,
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-          border: Border.all(color: AppColors.grey200),
+          color: AppColors.white,
+          border: Border.all(color: AppColors.grey200, width: 1),
+          borderRadius: BorderRadius.circular(2),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,64 +36,63 @@ class ProductCard extends ConsumerWidget {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(AppSizes.radiusLg)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
                   child: product.firstImage != null
                       ? CachedNetworkImage(
                           imageUrl: product.firstImage!,
-                          height: AppSizes.productCardImageHeight,
+                          height: 160,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          placeholder: (_, __) => _buildImageSkeleton(),
-                          errorWidget: (_, __, ___) => _buildImagePlaceholder(),
+                          placeholder: (_, __) => Shimmer.fromColors(
+                            baseColor: AppColors.grey200,
+                            highlightColor: AppColors.grey100,
+                            child: Container(height: 160, color: AppColors.grey200),
+                          ),
+                          errorWidget: (_, __, ___) => Container(
+                            height: 160,
+                            color: AppColors.grey100,
+                            child: const Center(child: Icon(Icons.image_outlined, color: AppColors.grey300, size: 32)),
+                          ),
                         )
-                      : _buildImagePlaceholder(),
+                      : Container(
+                          height: 160,
+                          color: AppColors.grey100,
+                          child: const Center(child: Icon(Icons.image_outlined, color: AppColors.grey300, size: 32)),
+                        ),
                 ),
-                // Discount badge
+                // Sale badge
                 if (product.isOnSale)
                   Positioned(
-                    top: 8,
-                    left: 8,
+                    top: 0,
+                    left: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: AppColors.discount,
-                        borderRadius:
-                            BorderRadius.circular(AppSizes.radiusXs),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                      color: AppColors.black,
                       child: Text(
                         '-${product.discountPercentage}%',
                         style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
                   ),
-                // Wishlist button
+                // Wishlist
                 Positioned(
-                  top: 4,
-                  right: 4,
+                  top: 6,
+                  right: 6,
                   child: GestureDetector(
-                    onTap: () =>
-                        ref.read(wishlistProvider.notifier).toggle(product.id),
+                    onTap: () => ref.read(wishlistProvider.notifier).toggle(product.id),
                     child: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        shape: BoxShape.circle,
-                      ),
+                      width: 28,
+                      height: 28,
+                      color: AppColors.white,
                       child: Icon(
-                        isWishlisted
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        size: 16,
-                        color: isWishlisted
-                            ? AppColors.error
-                            : AppColors.grey500,
+                        isWishlisted ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                        size: 14,
+                        color: isWishlisted ? AppColors.error : AppColors.grey400,
                       ),
                     ),
                   ),
@@ -105,7 +102,7 @@ class ProductCard extends ConsumerWidget {
 
             // Info
             Padding(
-              padding: const EdgeInsets.all(AppSizes.sm),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,55 +111,46 @@ class ProductCard extends ConsumerWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      height: 1.4,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      height: 1.35,
+                      color: AppColors.black,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  // Rating
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded,
-                          size: 12, color: AppColors.starFilled),
+                      const Icon(Icons.star_rounded, size: 10, color: AppColors.primary),
                       const SizedBox(width: 2),
                       Text(
                         product.rating.toStringAsFixed(1),
-                        style: const TextStyle(
-                            fontSize: 11, color: AppColors.grey600),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '(${product.reviewCount.compact})',
-                        style: const TextStyle(
-                            fontSize: 11, color: AppColors.grey400),
+                        style: const TextStyle(fontSize: 10, color: AppColors.grey600, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
                   const SizedBox(height: 6),
-                  // Price
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        product.price.currency,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                      Expanded(
+                        child: Text(
+                          product.price.currency,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.black,
+                          ),
                         ),
                       ),
-                      if (product.compareAtPrice != null) ...[
-                        const SizedBox(width: 4),
+                      if (product.compareAtPrice != null)
                         Text(
                           product.compareAtPrice!.currency,
                           style: const TextStyle(
-                            fontSize: 10,
+                            fontSize: 9,
                             color: AppColors.grey400,
                             decoration: TextDecoration.lineThrough,
                           ),
                         ),
-                      ],
                     ],
                   ),
                 ],
@@ -170,27 +158,6 @@ class ProductCard extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildImageSkeleton() {
-    return Shimmer.fromColors(
-      baseColor: AppColors.grey200,
-      highlightColor: AppColors.grey100,
-      child: Container(
-        height: AppSizes.productCardImageHeight,
-        color: AppColors.grey200,
-      ),
-    );
-  }
-
-  Widget _buildImagePlaceholder() {
-    return Container(
-      height: AppSizes.productCardImageHeight,
-      color: AppColors.grey100,
-      child: const Center(
-        child: Icon(Icons.image_outlined, color: AppColors.grey300, size: 40),
       ),
     );
   }

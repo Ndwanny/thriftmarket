@@ -20,11 +20,11 @@ class MarketplaceApp extends ConsumerWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp.router(
-          title: 'Marketplace',
+          title: 'Thrift Market LKS',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
-          themeMode: themeMode,
+          themeMode: ThemeMode.light,
           routerConfig: router,
         );
       },

@@ -16,22 +16,31 @@ class _HomeBannerState extends State<HomeBanner> {
 
   final List<_BannerData> _banners = [
     _BannerData(
-      title: 'Up to 50% Off\nTop Brands',
-      subtitle: 'Limited time deals',
-      gradient: [Color(0xFF6C3CE1), Color(0xFF9B72F0)],
-      icon: Icons.local_offer_rounded,
+      eyebrow: 'LONGACRES MALL · 2016 EDITION',
+      title: 'THRIFT\nMARKET\nLUSAKA',
+      cta: 'SHOP THE DROP',
+      bgColor: AppColors.black,
+      textColor: AppColors.white,
+      accentColor: AppColors.primary,
+      imageUrl: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=80&fit=crop',
     ),
     _BannerData(
-      title: 'Free Delivery\nOn Orders K200+',
-      subtitle: 'All vendors included',
-      gradient: [Color(0xFFFF6B35), Color(0xFFFFAA60)],
-      icon: Icons.local_shipping_rounded,
+      eyebrow: 'VINTAGE · STREETWEAR · CULTURE',
+      title: 'FIND YOUR\nSTYLE\nHERE',
+      cta: 'EXPLORE NOW',
+      bgColor: AppColors.primary,
+      textColor: AppColors.black,
+      accentColor: AppColors.black,
+      imageUrl: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&q=80&fit=crop',
     ),
     _BannerData(
-      title: 'New Vendors\nJoined This Week',
-      subtitle: 'Discover fresh stores',
-      gradient: [Color(0xFF10B981), Color(0xFF34D399)],
-      icon: Icons.storefront_rounded,
+      eyebrow: 'CAMERAS · JEWELRY · COLLECTABLES',
+      title: 'RARE\nFINDS\nAWAIT',
+      cta: 'DISCOVER MORE',
+      bgColor: AppColors.white,
+      textColor: AppColors.black,
+      accentColor: AppColors.black,
+      imageUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80&fit=crop',
     ),
   ];
 
@@ -41,27 +50,26 @@ class _HomeBannerState extends State<HomeBanner> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-            height: 160,
-            viewportFraction: 0.88,
-            enlargeCenterPage: true,
-            enlargeFactor: 0.1,
+            height: 200,
+            viewportFraction: 1.0,
+            enlargeCenterPage: false,
             autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 4),
+            autoPlayInterval: const Duration(seconds: 5),
             autoPlayCurve: Curves.easeInOut,
             onPageChanged: (i, _) => setState(() => _currentIndex = i),
           ),
           items: _banners.map((banner) => _BannerCard(data: banner)).toList(),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
         AnimatedSmoothIndicator(
           activeIndex: _currentIndex,
           count: _banners.length,
           effect: const ExpandingDotsEffect(
             activeDotColor: AppColors.primary,
             dotColor: AppColors.grey300,
-            dotHeight: 6,
-            dotWidth: 6,
-            expansionFactor: 3,
+            dotHeight: 4,
+            dotWidth: 4,
+            expansionFactor: 4,
           ),
         ),
       ],
@@ -76,63 +84,72 @@ class _BannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: data.gradient,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: const EdgeInsets.all(20),
+      color: data.bgColor,
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  data.subtitle,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 12,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  data.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    height: 1.25,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    'Shop Now',
-                    style: TextStyle(
-                      color: data.gradient.first,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Poppins',
+            flex: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    color: data.accentColor,
+                    child: Text(
+                      data.eyebrow,
+                      style: TextStyle(
+                        color: data.bgColor == AppColors.primary ? AppColors.black : (data.accentColor == AppColors.black ? AppColors.white : AppColors.black),
+                        fontSize: 8,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Poppins',
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  Text(
+                    data.title,
+                    style: TextStyle(
+                      color: data.textColor,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      height: 0.95,
+                      fontFamily: 'Poppins',
+                      letterSpacing: -1,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    color: data.accentColor,
+                    child: Text(
+                      data.cta,
+                      style: TextStyle(
+                        color: data.bgColor == AppColors.primary ? AppColors.white : (data.accentColor == AppColors.primary ? AppColors.black : AppColors.white),
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Poppins',
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Icon(data.icon, color: Colors.white.withOpacity(0.25), size: 80),
+          Expanded(
+            flex: 4,
+            child: SizedBox.expand(
+              child: Image.network(
+                data.imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(color: AppColors.grey200),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -140,13 +157,20 @@ class _BannerCard extends StatelessWidget {
 }
 
 class _BannerData {
+  final String eyebrow;
   final String title;
-  final String subtitle;
-  final List<Color> gradient;
-  final IconData icon;
-  const _BannerData(
-      {required this.title,
-      required this.subtitle,
-      required this.gradient,
-      required this.icon});
+  final String cta;
+  final Color bgColor;
+  final Color textColor;
+  final Color accentColor;
+  final String imageUrl;
+  const _BannerData({
+    required this.eyebrow,
+    required this.title,
+    required this.cta,
+    required this.bgColor,
+    required this.textColor,
+    required this.accentColor,
+    required this.imageUrl,
+  });
 }
