@@ -3,8 +3,8 @@
 -- Run in: Supabase Dashboard → SQL Editor → New Query
 -- ============================================================
 
--- Update categories for Thrift Market Lusaka
-DELETE FROM categories;
+-- Clear existing seed data (safe re-run)
+TRUNCATE TABLE products, vendors, categories RESTART IDENTITY CASCADE;
 
 INSERT INTO categories (id, name, slug, icon, sort_order) VALUES
   ('a1000000-0000-0000-0000-000000000001', 'Streetwear & Fashion', 'streetwear-fashion', 'checkroom', 1),
