@@ -93,98 +93,83 @@ class VendorStoreScreen extends ConsumerWidget {
               SliverToBoxAdapter(
                 child: Container(
                   color: AppColors.black,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Logo circle — overlaps banner
-                      Transform.translate(
-                        offset: const Offset(0, -28),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            _LogoAvatar(
-                                logoUrl: vendor.logoUrl,
-                                name: vendor.storeName),
-                            const SizedBox(width: 12),
-                            if (vendor.isVerified)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 3),
-                                  color: AppColors.primary,
-                                  child: const Text(
-                                    'VERIFIED VENDOR',
-                                    style: TextStyle(
-                                      color: AppColors.black,
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 1,
-                                    ),
-                                  ),
+                      // Logo + verified badge
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _LogoAvatar(
+                              logoUrl: vendor.logoUrl,
+                              name: vendor.storeName),
+                          const SizedBox(width: 12),
+                          if (vendor.isVerified)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
+                              color: AppColors.primary,
+                              child: const Text(
+                                'VERIFIED VENDOR',
+                                style: TextStyle(
+                                  color: AppColors.black,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1,
                                 ),
                               ),
-                          ],
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      // Store name
+                      Text(
+                        vendor.storeName,
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w900,
+                          fontSize: 22,
+                          letterSpacing: -0.5,
                         ),
                       ),
-
-                      // Store name
-                      Transform.translate(
-                        offset: const Offset(0, -20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              vendor.storeName,
-                              style: const TextStyle(
-                                color: AppColors.white,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w900,
-                                fontSize: 22,
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                            if (vendor.storeDescription != null) ...[
-                              const SizedBox(height: 6),
-                              Text(
-                                vendor.storeDescription!,
-                                style: const TextStyle(
-                                  color: AppColors.grey400,
-                                  fontFamily: 'Poppins',
-                                  fontSize: 12,
-                                  height: 1.5,
-                                ),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                            const SizedBox(height: 16),
-
-                            // Stats row
-                            Row(
-                              children: [
-                                _StatBadge(
-                                  label: 'RATING',
-                                  value: vendor.rating.toStringAsFixed(1),
-                                  icon: Icons.star_rounded,
-                                ),
-                                const SizedBox(width: 8),
-                                _StatBadge(
-                                  label: 'REVIEWS',
-                                  value: '${vendor.reviewCount}',
-                                  icon: Icons.chat_bubble_outline_rounded,
-                                ),
-                                const SizedBox(width: 8),
-                                _StatBadge(
-                                  label: 'SALES',
-                                  value: '${vendor.totalSales}',
-                                  icon: Icons.local_shipping_outlined,
-                                ),
-                              ],
-                            ),
-                          ],
+                      if (vendor.storeDescription != null) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          vendor.storeDescription!,
+                          style: const TextStyle(
+                            color: AppColors.grey400,
+                            fontFamily: 'Poppins',
+                            fontSize: 12,
+                            height: 1.5,
+                          ),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
                         ),
+                      ],
+                      const SizedBox(height: 16),
+                      // Stats row
+                      Row(
+                        children: [
+                          _StatBadge(
+                            label: 'RATING',
+                            value: vendor.rating.toStringAsFixed(1),
+                            icon: Icons.star_rounded,
+                          ),
+                          const SizedBox(width: 8),
+                          _StatBadge(
+                            label: 'REVIEWS',
+                            value: '${vendor.reviewCount}',
+                            icon: Icons.chat_bubble_outline_rounded,
+                          ),
+                          const SizedBox(width: 8),
+                          _StatBadge(
+                            label: 'SALES',
+                            value: '${vendor.totalSales}',
+                            icon: Icons.local_shipping_outlined,
+                          ),
+                        ],
                       ),
                     ],
                   ),
