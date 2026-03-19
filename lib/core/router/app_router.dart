@@ -33,6 +33,28 @@ import '../../features/vendor/presentation/screens/add_product_screen.dart';
 import '../widgets/main_scaffold.dart';
 import 'route_names.dart';
 
+CustomTransitionPage<void> _fadeSlidePage(Widget child, GoRouterState state) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 300),
+    reverseTransitionDuration: const Duration(milliseconds: 250),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+        child: SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 0.04),
+            end: Offset.zero,
+          ).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
 
@@ -121,16 +143,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '${RouteNames.productList}/:categoryId',
         name: RouteNames.productList,
-        builder: (context, state) => ProductListScreen(
-          categoryId: state.pathParameters['categoryId'] ?? '',
-          categoryName: state.uri.queryParameters['name'] ?? 'Products',
+        pageBuilder: (context, state) => _fadeSlidePage(
+          ProductListScreen(
+            categoryId: state.pathParameters['categoryId'] ?? '',
+            categoryName: state.uri.queryParameters['name'] ?? 'Products',
+          ),
+          state,
         ),
       ),
       GoRoute(
         path: '${RouteNames.productDetails}/:productId',
         name: RouteNames.productDetails,
-        builder: (context, state) => ProductDetailsScreen(
-          productId: state.pathParameters['productId'] ?? '',
+        pageBuilder: (context, state) => _fadeSlidePage(
+          ProductDetailsScreen(
+            productId: state.pathParameters['productId'] ?? '',
+          ),
+          state,
         ),
       ),
 
@@ -138,22 +166,29 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.checkout,
         name: RouteNames.checkout,
-        builder: (context, state) => const CheckoutScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const CheckoutScreen(), state),
       ),
 
       // Order details & tracking
       GoRoute(
         path: '${RouteNames.orderDetails}/:orderId',
         name: RouteNames.orderDetails,
-        builder: (context, state) => OrderDetailsScreen(
-          orderId: state.pathParameters['orderId'] ?? '',
+        pageBuilder: (context, state) => _fadeSlidePage(
+          OrderDetailsScreen(
+            orderId: state.pathParameters['orderId'] ?? '',
+          ),
+          state,
         ),
       ),
       GoRoute(
         path: '${RouteNames.trackOrder}/:orderId',
         name: RouteNames.trackOrder,
-        builder: (context, state) => TrackOrderScreen(
-          orderId: state.pathParameters['orderId'] ?? '',
+        pageBuilder: (context, state) => _fadeSlidePage(
+          TrackOrderScreen(
+            orderId: state.pathParameters['orderId'] ?? '',
+          ),
+          state,
         ),
       ),
 
@@ -161,15 +196,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.vendors,
         name: RouteNames.vendors,
-        builder: (context, state) => const VendorsScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const VendorsScreen(), state),
       ),
 
       // Vendor
       GoRoute(
         path: '${RouteNames.vendorStore}/:vendorId',
         name: RouteNames.vendorStore,
-        builder: (context, state) => VendorStoreScreen(
-          vendorId: state.pathParameters['vendorId'] ?? '',
+        pageBuilder: (context, state) => _fadeSlidePage(
+          VendorStoreScreen(
+            vendorId: state.pathParameters['vendorId'] ?? '',
+          ),
+          state,
         ),
       ),
       GoRoute(
@@ -192,43 +231,52 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.editProfile,
         name: RouteNames.editProfile,
-        builder: (context, state) => const EditProfileScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const EditProfileScreen(), state),
       ),
       GoRoute(
         path: RouteNames.settings,
         name: RouteNames.settings,
-        builder: (context, state) => const SettingsScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const SettingsScreen(), state),
       ),
       GoRoute(
         path: RouteNames.addresses,
         name: RouteNames.addresses,
-        builder: (context, state) => const AddressesScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const AddressesScreen(), state),
       ),
       GoRoute(
         path: RouteNames.wishlist,
         name: RouteNames.wishlist,
-        builder: (context, state) => const WishlistScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const WishlistScreen(), state),
       ),
 
       // Notifications
       GoRoute(
         path: RouteNames.notifications,
         name: RouteNames.notifications,
-        builder: (context, state) => const NotificationsScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const NotificationsScreen(), state),
       ),
 
       // Chat
       GoRoute(
         path: RouteNames.chatList,
         name: RouteNames.chatList,
-        builder: (context, state) => const ChatListScreen(),
+        pageBuilder: (context, state) =>
+            _fadeSlidePage(const ChatListScreen(), state),
       ),
       GoRoute(
         path: '${RouteNames.chatRoom}/:chatId',
         name: RouteNames.chatRoom,
-        builder: (context, state) => ChatRoomScreen(
-          chatId: state.pathParameters['chatId'] ?? '',
-          vendorName: state.uri.queryParameters['vendorName'] ?? '',
+        pageBuilder: (context, state) => _fadeSlidePage(
+          ChatRoomScreen(
+            chatId: state.pathParameters['chatId'] ?? '',
+            vendorName: state.uri.queryParameters['vendorName'] ?? '',
+          ),
+          state,
         ),
       ),
     ],

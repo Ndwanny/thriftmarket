@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -57,11 +58,13 @@ class VendorStoreScreen extends ConsumerWidget {
         ),
         data: (vendor) {
           return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
               // Banner + back button
               SliverAppBar(
                 expandedHeight: 220,
                 pinned: true,
+                stretch: true,
                 backgroundColor: AppColors.black,
                 elevation: 0,
                 leading: IconButton(
@@ -78,6 +81,7 @@ class VendorStoreScreen extends ConsumerWidget {
                   onPressed: () => context.pop(),
                 ),
                 flexibleSpace: FlexibleSpaceBar(
+                  stretchModes: const [StretchMode.zoomBackground],
                   background: vendor.bannerUrl != null
                       ? CachedNetworkImage(
                           imageUrl: vendor.bannerUrl!,
@@ -253,7 +257,15 @@ class VendorStoreScreen extends ConsumerWidget {
                       ),
                       delegate: SliverChildBuilderDelegate(
                         (_, i) => ProductCard(
-                            product: products[i], width: double.infinity),
+                                product: products[i], width: double.infinity)
+                            .animate(
+                                delay: Duration(
+                                    milliseconds: 50 * (i % 6)))
+                            .fadeIn(duration: 400.ms)
+                            .slideY(
+                                begin: 0.06,
+                                end: 0,
+                                curve: Curves.easeOutCubic),
                         childCount: products.length,
                       ),
                     ),

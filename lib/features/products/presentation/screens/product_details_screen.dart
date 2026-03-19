@@ -31,6 +31,7 @@ class ProductDetailsScreen extends ConsumerWidget {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
                 expandedHeight: 320,
@@ -53,16 +54,19 @@ class ProductDetailsScreen extends ConsumerWidget {
                   ),
                 ],
                 flexibleSpace: FlexibleSpaceBar(
-                  background: product.firstImage != null
-                      ? CachedNetworkImage(
-                          imageUrl: product.firstImage!,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          color: AppColors.grey100,
-                          child: const Icon(Icons.image_outlined,
-                              size: 80, color: AppColors.grey300),
-                        ),
+                  background: Hero(
+                    tag: 'product-image-$productId',
+                    child: product.firstImage != null
+                        ? CachedNetworkImage(
+                            imageUrl: product.firstImage!,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            color: AppColors.grey100,
+                            child: const Icon(Icons.image_outlined,
+                                size: 80, color: AppColors.grey300),
+                          ),
+                  ),
                 ),
               ),
               SliverToBoxAdapter(

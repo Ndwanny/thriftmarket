@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -49,6 +50,7 @@ class _VendorsScreenState extends ConsumerState<VendorsScreen> {
             constraints: BoxConstraints(
                 maxWidth: screenWidth >= 1400 ? 1400 : double.infinity),
             child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
               slivers: [
                 SliverAppBar(
                   pinned: true,
@@ -132,7 +134,15 @@ class _VendorsScreenState extends ConsumerState<VendorsScreen> {
                           mainAxisExtent: 140,
                         ),
                         delegate: SliverChildBuilderDelegate(
-                          (_, i) => _VendorCard(vendor: list[i]),
+                          (_, i) => _VendorCard(vendor: list[i])
+                              .animate(
+                                  delay: Duration(
+                                      milliseconds: 60 * (i % 6)))
+                              .fadeIn(duration: 400.ms)
+                              .slideY(
+                                  begin: 0.05,
+                                  end: 0,
+                                  curve: Curves.easeOutCubic),
                           childCount: list.length,
                         ),
                       ),
