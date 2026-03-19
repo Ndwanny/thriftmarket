@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS categories (
 -- ── Vendors ──────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS vendors (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id          UUID UNIQUE REFERENCES profiles(id) ON DELETE CASCADE,
+  user_id          UUID REFERENCES profiles(id) ON DELETE CASCADE,
   store_name       TEXT NOT NULL,
   description      TEXT,
   logo_url         TEXT,
@@ -92,6 +92,7 @@ CREATE TABLE IF NOT EXISTS products (
   updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE INDEX IF NOT EXISTS idx_vendors_user ON vendors(user_id);
 CREATE INDEX IF NOT EXISTS idx_products_vendor ON products(vendor_id);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_products_active ON products(is_active);
