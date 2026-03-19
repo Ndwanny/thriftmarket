@@ -29,9 +29,9 @@ class _VendorsScreenState extends ConsumerState<VendorsScreen> {
     final allVendors = ref.watch(allVendorsProvider);
     final query = ref.watch(vendorSearchQueryProvider);
     final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = screenWidth >= 900 ? 3 : screenWidth >= 600 ? 2 : 1;
+    final crossAxisCount = screenWidth >= 900 ? 3 : 2;
 
-    final vendors = allVendors.whenData((list) {
+    final filteredList = allVendors.whenData((list) {
       if (query.isEmpty) return list;
       final q = query.toLowerCase();
       return list
@@ -50,7 +50,6 @@ class _VendorsScreenState extends ConsumerState<VendorsScreen> {
                 maxWidth: screenWidth >= 1400 ? 1400 : double.infinity),
             child: CustomScrollView(
               slivers: [
-                // App bar
                 SliverAppBar(
                   pinned: true,
                   backgroundColor: AppColors.black,
@@ -81,8 +80,7 @@ class _VendorsScreenState extends ConsumerState<VendorsScreen> {
                   ),
                 ),
 
-                // Results
-                vendors.when(
+                filteredList.when(
                   loading: () => const SliverFillRemaining(
                     child: Center(
                       child: CircularProgressIndicator(
@@ -91,9 +89,12 @@ class _VendorsScreenState extends ConsumerState<VendorsScreen> {
                   ),
                   error: (e, _) => SliverFillRemaining(
                     child: Center(
-                      child: Text('Error: $e',
-                          style:
-                              const TextStyle(color: AppColors.grey600)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text('Error loading vendors: $e',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: AppColors.grey600)),
+                      ),
                     ),
                   ),
                   data: (list) {
@@ -120,33 +121,22 @@ class _VendorsScreenState extends ConsumerState<VendorsScreen> {
                         ),
                       );
                     }
-                    return crossAxisCount == 1
-                        ? SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (_, i) => Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    16, i == 0 ? 16 : 8, 16, 0),
-                                child: _VendorCard(vendor: list[i]),
-                              ),
-                              childCount: list.length,
-                            ),
-                          )
-                        : SliverPadding(
-                            padding: const EdgeInsets.all(16),
-                            sliver: SliverGrid(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: crossAxisCount,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                childAspectRatio: 1.55,
-                              ),
-                              delegate: SliverChildBuilderDelegate(
-                                (_, i) => _VendorCard(vendor: list[i]),
-                                childCount: list.length,
-                              ),
-                            ),
-                          );
+                    return SliverPadding(
+                      padding: const EdgeInsets.all(16),
+                      sliver: SliverGrid(
+                        gridDelegate:
+                            SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          mainAxisExtent: 140,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (_, i) => _VendorCard(vendor: list[i]),
+                          childCount: list.length,
+                        ),
+                      ),
+                    );
                   },
                 ),
 
@@ -174,7 +164,8 @@ class _SearchBar extends ConsumerWidget {
       ),
       child: TextField(
         controller: controller,
-        onChanged: (v) => ref.read(vendorSearchQueryProvider.notifier).search(v),
+        onChanged: (v) =>
+            ref.read(vendorSearchQueryProvider.notifier).search(v),
         style: const TextStyle(
             color: AppColors.white, fontFamily: 'Poppins', fontSize: 13),
         decoration: InputDecoration(
@@ -211,70 +202,80 @@ class _VendorCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.push('${RouteNames.vendorStore}/${vendor.id}'),
       child: Container(
+        height: 140,
         decoration: BoxDecoration(
-          color: AppColors.black,
+          color: AppColors.grey900,
           borderRadius: BorderRadius.circular(2),
         ),
         clipBehavior: Clip.hardEdge,
         child: Stack(
-          fit: StackFit.expand,
           children: [
-            // Banner image
+            // Banner image — fills the card
             if (vendor.bannerUrl != null)
-              CachedNetworkImage(
-                imageUrl: vendor.bannerUrl!,
-                fit: BoxFit.cover,
-                errorWidget: (_, __, ___) =>
-                    Container(color: AppColors.grey900),
+              Positioned.fill(
+                child: CachedNetworkImage(
+                  imageUrl: vendor.bannerUrl!,
+                  fit: BoxFit.cover,
+                  errorWidget: (_, __, ___) =>
+                      Container(color: AppColors.grey900),
+                ),
               )
             else
-              Container(color: AppColors.grey900),
+              Positioned.fill(child: Container(color: AppColors.grey900)),
 
-            // Gradient overlay
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Color(0xCC000000),
-                  ],
-                  stops: [0.3, 1.0],
+            // Dark gradient from bottom
+            Positioned.fill(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Color(0xDD000000)],
+                    stops: [0.2, 1.0],
+                  ),
                 ),
               ),
             ),
 
-            // Content
-            Padding(
-              padding: const EdgeInsets.all(12),
+            // Top: logo + verified badge
+            Positioned(
+              top: 10,
+              left: 10,
+              right: 10,
+              child: Row(
+                children: [
+                  _VendorLogo(
+                      logoUrl: vendor.logoUrl, name: vendor.storeName),
+                  if (vendor.isVerified) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 2),
+                      color: AppColors.primary,
+                      child: const Text(
+                        'VERIFIED',
+                        style: TextStyle(
+                          color: AppColors.black,
+                          fontSize: 8,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+            // Bottom: name + rating
+            Positioned(
+              bottom: 10,
+              left: 10,
+              right: 10,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Logo + verified badge
-                  Row(
-                    children: [
-                      _VendorLogo(logoUrl: vendor.logoUrl, name: vendor.storeName),
-                      if (vendor.isVerified)
-                        Container(
-                          margin: const EdgeInsets.only(left: 6),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 2),
-                          color: AppColors.primary,
-                          child: const Text(
-                            'VERIFIED',
-                            style: TextStyle(
-                              color: AppColors.black,
-                              fontSize: 8,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  const Spacer(),
-                  // Store name
                   Text(
                     vendor.storeName,
                     maxLines: 1,
@@ -286,7 +287,7 @@ class _VendorCard extends StatelessWidget {
                       fontSize: 13,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Row(
                     children: [
                       const Icon(Icons.star_rounded,
@@ -299,7 +300,7 @@ class _VendorCard extends StatelessWidget {
                             fontSize: 11,
                             fontWeight: FontWeight.w600),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Text(
                         '${vendor.reviewCount} reviews',
                         style: const TextStyle(
@@ -325,8 +326,8 @@ class _VendorLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 36,
-      height: 36,
+      width: 32,
+      height: 32,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: AppColors.primary, width: 2),
@@ -337,28 +338,28 @@ class _VendorLogo extends StatelessWidget {
           ? CachedNetworkImage(
               imageUrl: logoUrl!,
               fit: BoxFit.cover,
-              errorWidget: (_, __, ___) => _Initials(name: name),
+              errorWidget: (_, __, ___) =>
+                  Center(
+                    child: Text(
+                      name.isNotEmpty ? name[0].toUpperCase() : 'V',
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
             )
-          : _Initials(name: name),
-    );
-  }
-}
-
-class _Initials extends StatelessWidget {
-  final String name;
-  const _Initials({required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        name.isNotEmpty ? name[0].toUpperCase() : 'V',
-        style: const TextStyle(
-          color: AppColors.primary,
-          fontWeight: FontWeight.w900,
-          fontSize: 14,
-        ),
-      ),
+          : Center(
+              child: Text(
+                name.isNotEmpty ? name[0].toUpperCase() : 'V',
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                ),
+              ),
+            ),
     );
   }
 }
