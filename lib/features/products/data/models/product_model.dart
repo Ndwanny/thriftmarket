@@ -26,32 +26,36 @@ class ProductModel extends ProductEntity {
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
+    // Support both Supabase column names and legacy API field names
+    final vendor = json['vendor'] as Map<String, dynamic>?;
+    final category = json['category'] as Map<String, dynamic>?;
+
     return ProductModel(
       id: json['id'] as String,
-      title: json['title'] as String,
+      title: (json['name'] ?? json['title']) as String,
       description: json['description'] as String? ?? '',
       price: (json['price'] as num).toDouble(),
-      compareAtPrice: json['compare_at_price'] != null
-          ? (json['compare_at_price'] as num).toDouble()
+      compareAtPrice: (json['original_price'] ?? json['compare_at_price']) != null
+          ? ((json['original_price'] ?? json['compare_at_price']) as num).toDouble()
           : null,
       discountPercent: json['discount_percent'] != null
           ? (json['discount_percent'] as num).toDouble()
           : null,
       categoryId: json['category_id'] as String,
-      categoryName: json['category_name'] as String? ?? '',
+      categoryName: category?['name'] as String? ?? json['category_name'] as String? ?? '',
       vendorId: json['vendor_id'] as String,
-      vendorName: json['vendor_name'] as String? ?? '',
-      vendorLogoUrl: json['vendor_logo_url'] as String?,
+      vendorName: vendor?['store_name'] as String? ?? json['vendor_name'] as String? ?? '',
+      vendorLogoUrl: vendor?['logo_url'] as String? ?? json['vendor_logo_url'] as String?,
       images: (json['images'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
       reviewCount: json['review_count'] as int? ?? 0,
-      stock: json['stock'] as int? ?? 0,
+      stock: (json['stock_quantity'] ?? json['stock']) as int? ?? 0,
       status: _statusFromString(json['status'] as String? ?? 'active'),
       isFeatured: json['is_featured'] as bool? ?? false,
-      attributes: json['attributes'] as Map<String, dynamic>?,
+      attributes: (json['specifications'] ?? json['attributes']) as Map<String, dynamic>?,
       tags: (json['tags'] as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList(),
