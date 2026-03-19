@@ -28,6 +28,7 @@ import '../../features/search/presentation/screens/search_screen.dart';
 import '../../features/vendor/presentation/screens/vendor_dashboard_screen.dart';
 import '../../features/vendor/presentation/screens/vendor_registration_screen.dart';
 import '../../features/vendor/presentation/screens/vendor_store_screen.dart';
+import '../../features/vendor/presentation/screens/vendors_screen.dart';
 import '../../features/vendor/presentation/screens/add_product_screen.dart';
 import '../widgets/main_scaffold.dart';
 import 'route_names.dart';
@@ -154,6 +155,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => TrackOrderScreen(
           orderId: state.pathParameters['orderId'] ?? '',
         ),
+      ),
+
+      // Vendors list
+      GoRoute(
+        path: RouteNames.vendors,
+        name: RouteNames.vendors,
+        builder: (context, state) => const VendorsScreen(),
       ),
 
       // Vendor

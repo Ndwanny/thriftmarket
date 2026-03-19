@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/route_names.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../../products/presentation/widgets/product_card.dart';
+import '../../../vendor/presentation/providers/vendor_provider.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/home_banner.dart';
 import '../widgets/section_header.dart';
@@ -19,6 +19,7 @@ class HomeScreen extends ConsumerWidget {
     final categories = ref.watch(categoriesProvider);
     final featured = ref.watch(featuredProductsProvider);
     final newArrivals = ref.watch(newArrivalsProvider);
+    final vendors = ref.watch(allVendorsProvider);
     final screenWidth = MediaQuery.of(context).size.width;
 
     int crossAxisCount;
@@ -115,6 +116,137 @@ class HomeScreen extends ConsumerWidget {
                               name: cats[i].name,
                               onTap: () => context.push('${RouteNames.productList}/${cats[i].id}'),
                             ),
+                          ),
+                        ),
+                      ),
+
+                      // Vendors
+                      const SizedBox(height: 28),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(width: 4, height: 20, color: AppColors.primary),
+                                const SizedBox(width: 10),
+                                const Text(
+                                  'VENDORS',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 2,
+                                    color: AppColors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () => context.push(RouteNames.vendors),
+                              child: const Text(
+                                'SEE ALL',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1,
+                                  color: AppColors.grey500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      vendors.when(
+                        loading: () => SizedBox(
+                          height: 100,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: 4,
+                            separatorBuilder: (_, __) => const SizedBox(width: 10),
+                            itemBuilder: (_, __) => Container(
+                              width: 140, height: 100, color: AppColors.grey100),
+                          ),
+                        ),
+                        error: (_, __) => const SizedBox.shrink(),
+                        data: (vendorList) => SizedBox(
+                          height: 100,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: vendorList.length,
+                            separatorBuilder: (_, __) => const SizedBox(width: 10),
+                            itemBuilder: (_, i) {
+                              final v = vendorList[i];
+                              return GestureDetector(
+                                onTap: () => context.push('${RouteNames.vendorStore}/${v.id}'),
+                                child: Container(
+                                  width: 140,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.black,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                  clipBehavior: Clip.hardEdge,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      if (v.bannerUrl != null)
+                                        Image.network(v.bannerUrl!, fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) =>
+                                                Container(color: AppColors.grey900)),
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [Colors.transparent, Color(0xDD000000)],
+                                            stops: [0.2, 1.0],
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              v.storeName,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                color: AppColors.white,
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 11,
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.star_rounded,
+                                                    size: 9, color: AppColors.primary),
+                                                const SizedBox(width: 2),
+                                                Text(
+                                                  v.rating.toStringAsFixed(1),
+                                                  style: const TextStyle(
+                                                      color: AppColors.grey300,
+                                                      fontSize: 10),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),

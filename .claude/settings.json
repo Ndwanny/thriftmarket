@@ -24,7 +24,11 @@
       "Bash(powershell -Command \"Get-ChildItem ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\'' | Select-Object Name, Length\")",
       "Bash(powershell -Command \"Remove-Item ''C:\\\\Users\\\\HP\\\\Documents\\\\dev\\\\marketplace\\\\assets\\\\fonts\\\\.ttf'' -Force\")",
       "Bash(xargs grep:*)",
-      "Bash(/c/flutter/bin/flutter build:*)"
+      "Bash(/c/flutter/bin/flutter build:*)",
+      "WebSearch",
+      "Bash(find c:UsersHPDocumentsdevmarketplacelibfeaturesvendor -type f -name *.dart)",
+      "Bash(C:/flutter/bin/flutter build:*)",
+      "Bash(npx wrangler:*)"
     ]
   }
 }

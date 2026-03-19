@@ -28,6 +28,7 @@ class RouteNames {
   static const String trackOrder = '/track-order';
 
   // Vendor
+  static const String vendors = '/vendors';
   static const String vendorStore = '/store';
   static const String vendorDashboard = '/vendor/dashboard';
   static const String vendorRegistration = '/vendor/register';
