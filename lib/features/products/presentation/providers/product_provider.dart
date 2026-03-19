@@ -79,6 +79,29 @@ class ProductFilterParams {
     this.minPrice,
     this.maxPrice,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ProductFilterParams &&
+          categoryId == other.categoryId &&
+          vendorId == other.vendorId &&
+          query == other.query &&
+          page == other.page &&
+          sortBy == other.sortBy &&
+          minPrice == other.minPrice &&
+          maxPrice == other.maxPrice;
+
+  @override
+  int get hashCode => Object.hash(
+        categoryId,
+        vendorId,
+        query,
+        page,
+        sortBy,
+        minPrice,
+        maxPrice,
+      );
 }
 
 final filteredProductsProvider =
